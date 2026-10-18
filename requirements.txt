@@ -3,3 +3,4 @@ ortools
 pytest
 pandas
 matplotlib
+cplex

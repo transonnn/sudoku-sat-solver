@@ -37,3 +37,44 @@ Only include benchmark results obtained from actual executions. Document solver 
 ## Data Availability
 
 Repository: https://github.com/transonnn/sudoku-sat-solver
+## Implemented Solvers
+
+- **SAT:** Sudoku encoded as a Boolean satisfiability problem.
+- **CP-SAT:** Sudoku modeled using Google OR-Tools.
+- **CPLEX MIP:** Sudoku modeled as a binary mixed-integer optimization problem using IBM CPLEX.
+
+## Running Tests
+
+Run from the project root:
+
+```bash
+python -m pytest -v
+```
+
+## Running the Three-Solver Benchmark
+
+Run from the project root:
+
+```bash
+python -m benchmarks.benchmark
+```
+
+The benchmark compares SAT, CP-SAT, and CPLEX using the Sudoku instances in `data/sudoku_instances.json`. Each instance is warmed up once and measured five times. The median time is recorded.
+
+Output: `results/benchmark_sat_cpsat_cplex.csv`
+
+## Generating the Comparison Chart
+
+Run:
+
+```bash
+python -m benchmarks.plot_results
+```
+
+Output: `results/sat_vs_cpsat_cplex.png`
+
+The chart compares the mean of the per-instance median solving times for each solver, grouped by difficulty.
+
+## Experimental Integrity
+
+Benchmark results depend on the hardware, solver configuration, and model-building overhead. Record the environment and solver versions when reporting results.
