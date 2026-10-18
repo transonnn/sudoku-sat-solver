@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Editors
+.vscode/
+.idea/
+
+# Test and benchmark artifacts
+.pytest_cache/
+.coverage
+
+# Temporary files
+*.tmp
+*.log
