@@ -4,3 +4,4 @@ pytest
 pandas
 matplotlib
 cplex
+gurobipy

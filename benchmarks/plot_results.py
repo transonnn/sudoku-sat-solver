@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-INPUT_FILE = ROOT / "results" / "benchmark_sat_cpsat_cplex.csv"
+INPUT_FILE = ROOT / "results" / "benchmark_sat_cpsat_cplex_gurobi.csv"
 OUTPUT_DIR = ROOT / "results"
 
 df = pd.read_csv(INPUT_FILE)
@@ -21,11 +21,11 @@ pivot = summary.pivot(
 )
 
 pivot = pivot.reindex(["easy", "medium", "hard"])
-pivot = pivot.reindex(columns=["SAT", "CP-SAT", "CPLEX"])
+pivot = pivot.reindex(columns=["SAT", "CP-SAT", "CPLEX", "Gurobi"])
 
-ax = (pivot * 1000).plot(kind="bar", figsize=(10, 6))
+ax = (pivot * 1000).plot(kind="bar", figsize=(11, 6))
 
-ax.set_title("Sudoku Solver Performance: SAT vs CP-SAT vs CPLEX")
+ax.set_title("Sudoku Solver Performance: SAT vs CP-SAT vs CPLEX vs Gurobi")
 ax.set_xlabel("Difficulty")
 ax.set_ylabel("Mean solving time (ms)")
 ax.tick_params(axis="x", rotation=0)
@@ -33,7 +33,7 @@ ax.legend(title="Solver")
 
 plt.tight_layout()
 
-output_file = OUTPUT_DIR / "sat_vs_cpsat_cplex.png"
+output_file = OUTPUT_DIR / "sat_vs_cpsat_cplex_gurobi.png"
 plt.savefig(output_file, dpi=300)
 plt.close()
 

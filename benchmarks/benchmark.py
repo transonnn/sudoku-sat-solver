@@ -7,17 +7,19 @@ from pathlib import Path
 from src.sudoku_sat import solve_sudoku as solve_sat
 from src.sudoku_cpsat import solve_sudoku as solve_cpsat
 from src.sudoku_cplex import solve_sudoku as solve_cplex
+from src.sudoku_gurobi import solve_sudoku as solve_gurobi
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_FILE = ROOT / "data" / "sudoku_instances.json"
 RESULTS_DIR = ROOT / "results"
-OUTPUT_FILE = RESULTS_DIR / "benchmark_sat_cpsat_cplex.csv"
+OUTPUT_FILE = RESULTS_DIR / "benchmark_sat_cpsat_cplex_gurobi.csv"
 RUNS = 5
 
 SOLVERS = [
     ("SAT", solve_sat),
     ("CP-SAT", solve_cpsat),
     ("CPLEX", solve_cplex),
+    ("Gurobi", solve_gurobi),
 ]
 
 
@@ -103,6 +105,7 @@ def main():
     for difficulty, instances in datasets.items():
         for index, grid in enumerate(instances):
             for solver_name, solver in SOLVERS:
+                # Warm-up run; validate the solution but exclude its time.
                 measure(solver, grid)
 
                 times = [
