@@ -1,7 +1,5 @@
 python-sat
 ortools
-gurobipy
-docplex
+pytest
 pandas
 matplotlib
-pytest
