@@ -1,20 +1,28 @@
-﻿import cplex
+﻿from math import isqrt
+
+import cplex
 
 
 def solve_sudoku(grid: list[list[int]]) -> list[list[int]] | None:
-    """Solve a 9x9 Sudoku using IBM ILOG CPLEX as a binary MIP model."""
-    n = 9
+    """Solve a square-box Sudoku using IBM ILOG CPLEX as a binary MIP model."""
+    n = len(grid)
+    box = isqrt(n)
 
-    if len(grid) != n or any(len(row) != n for row in grid):
-        raise ValueError("Sudoku grid must be 9x9.")
+    if n == 0 or box * box != n:
+        raise ValueError("Sudoku size must be a perfect square.")
+
+    if any(len(row) != n for row in grid):
+        raise ValueError(f"Sudoku grid must be {n}x{n}.")
 
     if any(
-        not isinstance(value, int) or isinstance(value, bool)
-        or value < 0 or value > 9
+        not isinstance(value, int)
+        or isinstance(value, bool)
+        or value < 0
+        or value > n
         for row in grid
         for value in row
     ):
-        raise ValueError("Each cell must be an integer from 0 to 9.")
+        raise ValueError(f"Each cell must be an integer from 0 to {n}.")
 
     model = cplex.Cplex()
     model.set_log_stream(None)
@@ -48,36 +56,44 @@ def solve_sudoku(grid: list[list[int]]) -> list[list[int]] | None:
 
     def add_exactly_one(variables: list[str]) -> None:
         constraint_names.append(f"constraint_{len(constraint_names)}")
-        linear_expressions.append(cplex.SparsePair(
-            ind=variables,
-            val=[1.0] * len(variables),
-        ))
+        linear_expressions.append(
+            cplex.SparsePair(
+                ind=variables,
+                val=[1.0] * len(variables),
+            )
+        )
         senses.append("E")
         rhs.append(1.0)
 
     # Each cell contains exactly one digit.
     for r in range(n):
         for c in range(n):
-            add_exactly_one([var_name(r, c, d) for d in range(1, n + 1)])
+            add_exactly_one(
+                [var_name(r, c, d) for d in range(1, n + 1)]
+            )
 
     # Each digit appears exactly once in every row.
     for r in range(n):
         for d in range(1, n + 1):
-            add_exactly_one([var_name(r, c, d) for c in range(n)])
+            add_exactly_one(
+                [var_name(r, c, d) for c in range(n)]
+            )
 
     # Each digit appears exactly once in every column.
     for c in range(n):
         for d in range(1, n + 1):
-            add_exactly_one([var_name(r, c, d) for r in range(n)])
+            add_exactly_one(
+                [var_name(r, c, d) for r in range(n)]
+            )
 
-    # Each digit appears exactly once in every 3x3 box.
-    for box_r in range(0, n, 3):
-        for box_c in range(0, n, 3):
+    # Each digit appears exactly once in every box.
+    for box_r in range(0, n, box):
+        for box_c in range(0, n, box):
             for d in range(1, n + 1):
                 add_exactly_one([
                     var_name(r, c, d)
-                    for r in range(box_r, box_r + 3)
-                    for c in range(box_c, box_c + 3)
+                    for r in range(box_r, box_r + box)
+                    for c in range(box_c, box_c + box)
                 ])
 
     # Preserve the given clues.
