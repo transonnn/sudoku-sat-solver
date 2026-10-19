@@ -20,3 +20,7 @@ venv/
 # Temporary benchmark data and backups
 scaled-sudoku-temp/
 benchmarks/*_backup.py
+
+# Generated report drafts and Microsoft Word temporary files
+report/sudoku_solver_report.docx
+report/~$*
