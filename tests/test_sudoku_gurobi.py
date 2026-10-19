@@ -67,3 +67,23 @@ def test_rejects_invalid_cell_values(value):
 
     with pytest.raises(ValueError):
         solve_sudoku(grid)
+
+@pytest.mark.parametrize(
+    "grid",
+    [
+        [],
+        [[0] * 8 for _ in range(8)],
+        [[0] * 9 for _ in range(8)],
+        [[0] * 9 for _ in range(4)],
+    ],
+)
+def test_rejects_invalid_grid_shape(grid):
+    with pytest.raises(ValueError):
+        solve_sudoku(grid)
+
+
+def test_returns_none_for_contradictory_puzzle():
+    grid = [row[:] for row in STANDARD_PUZZLE]
+    grid[0][2] = 5
+
+    assert solve_sudoku(grid) is None

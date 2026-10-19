@@ -52,7 +52,7 @@ def test_solves_standard_puzzle():
 
 
 def test_rejects_invalid_grid_size():
-    with pytest.raises(ValueError, match="9x9"):
+    with pytest.raises(ValueError, match="perfect square"):
         solve_sudoku([[0] * 9 for _ in range(8)])
 
 
@@ -63,3 +63,23 @@ def test_rejects_invalid_cell_values(value):
 
     with pytest.raises(ValueError, match="integer from 0 to 9"):
         solve_sudoku(grid)
+
+@pytest.mark.parametrize(
+    "grid",
+    [
+        [],
+        [[0] * 8 for _ in range(8)],
+        [[0] * 9 for _ in range(8)],
+        [[0] * 9 for _ in range(4)],
+    ],
+)
+def test_rejects_invalid_grid_shape(grid):
+    with pytest.raises(ValueError):
+        solve_sudoku(grid)
+
+
+def test_returns_none_for_contradictory_puzzle():
+    grid = [row.copy() for row in PUZZLE]
+    grid[0][2] = 5
+
+    assert solve_sudoku(grid) is None
