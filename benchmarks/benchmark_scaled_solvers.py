@@ -2,13 +2,16 @@ import csv
 from pathlib import Path
 from time import perf_counter
 
+
 from src.scaled_sudoku import load_scaled_sudoku
 from src.sudoku_sat import solve_sudoku as solve_sat
 from src.sudoku_cpsat import solve_sudoku as solve_cpsat
+from src.sudoku_cplex import solve_sudoku as solve_cplex
+from src.sudoku_gurobi import solve_sudoku as solve_gurobi
 
 
 DATA_ROOT = Path("data/scaled-sudoku-sample")
-OUTPUT_PATH = Path("results/benchmark_scaled_solvers.csv")
+OUTPUT_PATH = Path("results/benchmark_scaled_all_solvers.csv")
 PUZZLES_PER_SIZE = 10
 
 
@@ -74,7 +77,9 @@ def main() -> None:
 
             for name, solve in (
                 ("SAT", solve_sat),
-                ("CP-SAT", solve_cpsat),
+    		("CP-SAT", solve_cpsat),
+    		("CPLEX MIP", solve_cplex),
+    		("Gurobi", solve_gurobi),
             ):
                 start = perf_counter()
                 error = ""
@@ -133,7 +138,7 @@ def main() -> None:
 
     print("\nSummary:")
     for size in (16, 25):
-        for name in ("SAT", "CP-SAT"):
+        for name in ("SAT", "CP-SAT", "CPLEX MIP", "Gurobi"):
             rows = [
                 row for row in results
                 if row["size"] == size and row["solver"] == name

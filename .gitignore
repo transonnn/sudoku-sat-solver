@@ -16,3 +16,7 @@ venv/
 # Temporary files
 *.tmp
 *.log
+
+# Temporary benchmark data and backups
+scaled-sudoku-temp/
+benchmarks/*_backup.py
